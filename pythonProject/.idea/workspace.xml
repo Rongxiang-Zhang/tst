@@ -26,7 +26,8 @@
     "Python.activate_this.executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "10242024",
+    "git-widget-placeholder": "10252024",
+    "last_opened_file_path": "C:/Users/SeanZhang/Desktop/model_training/tst/djangoProject",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -88,6 +89,7 @@
       <updated>1729789903599</updated>
       <workItem from="1729789956728" duration="217000" />
       <workItem from="1729790185125" duration="2262000" />
+      <workItem from="1729884672801" duration="49000" />
     </task>
     <servers />
   </component>
