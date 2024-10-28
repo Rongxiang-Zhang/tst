@@ -1,0 +1,20 @@
+<!-- your_app/templates/your_app/timezone.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timezones</title>
+</head>
+<body>
+    <h1>Select a Timezone</h1>
+    <form method="get" action="{% url 'timezone_view' %}">
+        <select name="timezone" onchange="this.form.submit()">
+            {% for tz in timezones %}
+                <option value="{{ tz }}" {% if tz == selected_timezone %}selected{% endif %}>{{ tz }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <h2>Current time in {{ selected_timezone }}: {{ selected_time }}</h2>
+</body>
+</html>
