@@ -7,7 +7,7 @@ from django.utils import timezone
 from datetime import datetime
 import pytz
 
-
+# commit test
 def home(request):
     return render(request, 'home.html', {})
 
