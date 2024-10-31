@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ user_settings.language|default_if_none:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Settings</title>
+    <style>
+        body {
+            background-color: {{ user_settings.background_color|default_if_none:'#FFFFFF' }};
+        }
+    </style>
+</head>
+<body>
+    <h1>User Settings</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <!-- For debugging -->
+    <p>Language: {{ user_settings.language }}</p>
+    <p>Background Color: {{ user_settings.background_color }}</p>
+</body>
+</html>
