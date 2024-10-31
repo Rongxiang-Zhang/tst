@@ -1,10 +1,35 @@
-from django.shortcuts import render
-
-# Create your views here.
-# <app_name>/views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserSettingForm
+from .models import UserSetting
 from datetime import datetime
 import pytz
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+@login_required
+def user_settings(request):
+    user_settings, created = UserSetting.objects.get_or_create(user=request.user)
+
+    logger.debug(f"user_settings fetched: {user_settings}")
+
+    if request.method == 'POST':
+        form = UserSettingForm(request.POST, instance=user_settings)
+        if form.is_valid():
+            form.save()
+            logger.debug("User settings saved successfully.")
+            return redirect('user_settings')
+    else:
+        form = UserSettingForm(instance=user_settings)
+
+    logger.debug(f"Form: {form}")
+    context = {
+        'form': form,
+        'user_settings': user_settings
+    }
+    return render(request, 'user_settings.html', context)
 
 
 def home(request):
@@ -16,9 +41,7 @@ def timezone_view(request):
     selected_timezone = request.GET.get('timezone', 'UTC')
 
     try:
-        # 获取当前时间并转换到选定的时区
         selected_time = datetime.now(pytz.timezone(selected_timezone))
-        # 格式化时间
         formatted_selected_time = selected_time.strftime('%Y-%m-%d %H:%M:%S')
     except pytz.UnknownTimeZoneError:
         selected_timezone = 'UTC'
