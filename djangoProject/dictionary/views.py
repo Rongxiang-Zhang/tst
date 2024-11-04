@@ -1,11 +1,13 @@
+import requests
+from django.http import JsonResponse
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UserSettingForm
 from .models import UserSetting
-from datetime import datetime
-import pytz
 import logging
-
+import pytz
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +33,8 @@ def user_settings(request):
     }
     return render(request, 'user_settings.html', context)
 
-
 def home(request):
     return render(request, 'home.html', {})
-
 
 def timezone_view(request):
     timezones = pytz.all_timezones
@@ -54,3 +54,23 @@ def timezone_view(request):
         'selected_time': formatted_selected_time,
     }
     return render(request, 'timezone.html', context)
+
+
+def temperature_view(request):
+    city = request.GET.get("city")
+    if not city:
+        return JsonResponse({"error": "City not provided"}, status=400)
+
+    api_key = settings.OPENWEATHER_API_KEY
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+
+    response = requests.get(url)
+    print("API Response Status:", response.status_code)
+    print("API Response Content:", response.text)  # 打印 API 返回的内容
+
+    if response.status_code == 200:
+        data = response.json()
+        temperature = data["main"]["temp"]
+        return JsonResponse({"temperature": temperature})
+    else:
+        return JsonResponse({"error": "Failed to fetch temperature"}, status=500)

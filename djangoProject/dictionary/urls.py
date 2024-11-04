@@ -1,13 +1,9 @@
-# <app_name>/urls.py
 from django.urls import path
 from . import views
-from .views import home, timezone_view, user_settings
+from .views import timezone_view, user_settings
 
 urlpatterns = [
-
-    # path('', home, name='home'),
-    path('', timezone_view, name='timezone_view'),
-
-
-    path('settings/', user_settings, name='user_settings'),  # 新增路径
+    path('temperature/', views.temperature_view, name='temperature'),  # 将 `temperature_view` 设为首页
+    path('time/', timezone_view, name='timezone_view'),
+    path('', user_settings, name='user_settings'),
 ]
