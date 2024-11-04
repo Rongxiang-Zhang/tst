@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Settings</title>
-<style>
-    body {
-        background-color: {{ user_settings.background_color|default_if_none:'#FF0000' }} !important;
-    }
-</style>
-
+    <style>
+        body {
+            background-color: {{ user_settings.background_color|default_if_none:'#FFFFFF' }};
+        }
+    </style>
 </head>
 <body>
     <h1>User Settings</h1>
@@ -18,8 +17,55 @@
         {{ form.as_p }}
         <button type="submit">Save</button>
     </form>
-    <!-- For debugging -->
-    <p>Language: {{ user_settings.language }}</p>
-    <p>Background Color: {{ user_settings.background_color }}</p>
+
+    <h2>选择地区和城市</h2>
+    <label for="region">选择地区:</label>
+    <select id="region" name="region">
+        <option value="us">美国</option>
+        <option value="cn">中国</option>
+        <option value="jp">日本</option>
+    </select>
+    
+    <label for="city">选择城市:</label>
+    <select id="city" name="city">
+        <!-- 动态填充城市列表 -->
+    </select>
+
+    <button type="button" onclick="fetchTemperature()">查询气温</button>
+    <p id="temperature">温度: </p>
+
+    <script>
+        document.getElementById("region").addEventListener("change", function() {
+            const region = this.value;
+            loadCities(region);
+        });
+
+        function loadCities(region) {
+            const cities = {
+                us: ["New York", "Los Angeles", "Chicago"],
+                cn: ["Beijing", "Shanghai", "Guangzhou"],
+                jp: ["Tokyo", "Osaka", "Nagoya"]
+            };
+            const citySelect = document.getElementById("city");
+            citySelect.innerHTML = ""; // 清空现有城市
+
+            cities[region].forEach(city => {
+                const option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        }
+
+        function fetchTemperature() {
+            const city = document.getElementById("city").value;
+            fetch(`/temperature?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("temperature").textContent = `温度: ${data.temperature}°C`;
+                })
+                .catch(error => console.error("Error fetching temperature:", error));
+        }
+    </script>
 </body>
 </html>
