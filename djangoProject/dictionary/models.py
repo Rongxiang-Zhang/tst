@@ -1,10 +1,3 @@
-from collections import UserString
-from symtable import Class
-
-from django.db import models
-
-# Create your models here.
-# <app_name>/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -29,13 +22,10 @@ class UserSetting(models.Model):
 
 
 @receiver(post_save, sender=User)
-def create_user_setting(sender, instance, created, **kwargs):
+def create_or_update_user_setting(sender, instance, created, **kwargs):
     if created:
         UserSetting.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_setting(sender, instance, **kwargs):
-    instance.usersetting.save()
-
-
+    else:
+        # 如果 UserSetting 存在，则保存更新
+        if hasattr(instance, 'usersetting'):
+            instance.usersetting.save()
