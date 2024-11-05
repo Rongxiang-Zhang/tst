@@ -74,3 +74,26 @@ def temperature_view(request):
         return JsonResponse({"temperature": temperature})
     else:
         return JsonResponse({"error": "Failed to fetch temperature"}, status=500)
+
+def get_weather_data(city):
+        api_key = settings.OPENWEATHER_API_KEY
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        return None
+def forecast_view(request):
+    city = request.GET.get("city")
+    if not city:
+        return JsonResponse({"error": "City not provided"}, status=400)
+
+    api_key = settings.OPENWEATHER_API_KEY
+    url = f"https://api.openweathermap.org/data/2.5/forecast/daily?q={city}&cnt=7&appid={api_key}&units=metric"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        forecast_data = response.json()
+        return JsonResponse(forecast_data)
+    else:
+        return JsonResponse({"error": "Failed to fetch forecast data"}, status=500)
